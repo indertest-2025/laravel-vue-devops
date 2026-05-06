@@ -1,0 +1,83 @@
+services:
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+
+    restart: unless-stopped
+
+    ports:
+      - "8080:80"
+
+    volumes:
+      - ./backend:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+    depends_on:
+      - laravel
+      - frontend
+
+  laravel:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+
+    container_name: laravel
+
+    restart: unless-stopped
+
+    working_dir: /var/www
+
+    volumes:
+      - ./backend:/var/www
+
+    depends_on:
+      - mysql
+      - redis
+
+  frontend:
+    build:
+      context: ./frontend
+
+    container_name: frontend
+
+    restart: unless-stopped
+
+    ports:
+      - "5173:5173"
+
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+  mysql:
+    image: mysql:8
+
+    container_name: mysql
+
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: laravel_app
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: laravel_password
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:latest
+
+    container_name: redis
+
+    restart: unless-stopped
+
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql_data:

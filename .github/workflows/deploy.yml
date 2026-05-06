@@ -1,0 +1,55 @@
+name: Deploy Laravel Vue App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+
+          mkdir -p ~/.ssh
+
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+
+          chmod 600 ~/.ssh/id_rsa
+
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Test SSH Connection
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+          ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+          "echo 'SSH Connection Successful'"
+
+      - name: Deploy Application
+        run: |
+
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+
+            cd ~/laravel-vue-devops/projects/laravel-vue-app
+
+            echo "Pulling latest code..."
+
+            git pull origin main
+
+            echo "Stopping old containers..."
+
+            docker compose down
+
+            echo "Building and starting containers..."
+
+            docker compose up --build -d
+
+            echo "Deployment completed successfully."
+
+          EOF

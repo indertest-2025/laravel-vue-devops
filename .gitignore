@@ -1,0 +1,68 @@
+# =========================
+# Laravel Backend
+# =========================
+
+backend/vendor/
+backend/node_modules/
+backend/.env
+backend/public/build/
+backend/public/hot
+
+backend/storage/logs/*
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/framework/testing/*
+
+backend/bootstrap/cache/*.php
+
+# Ignore generated keys
+backend/storage/*.key
+
+# =========================
+# Vue Frontend
+# =========================
+
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# =========================
+# Docker
+# =========================
+
+docker/mysql/
+
+# =========================
+# OS Files
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE / Editor
+# =========================
+
+.vscode/
+.idea/
+
+# =========================
+# Logs
+# =========================
+
+*.log
+
+# =========================
+# Environment
+# =========================
+
+.env
+.env.*
+
+# =========================
+# GitHub Actions Secrets Safety
+# =========================
+
+*.pem
+*.key
